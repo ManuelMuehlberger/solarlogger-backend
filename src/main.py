@@ -1,7 +1,8 @@
 def startup():
     print("test")
 
-
+def lol():
+    return "hi"
 
 
 
