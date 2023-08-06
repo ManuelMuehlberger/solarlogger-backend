@@ -1,0 +1,15 @@
+[meters]
+pollingfrequency = 1
+# available options for electricity meters are:
+# - SDM72DM
+#
+[meters.meter0]
+address = 2
+type = "SDM72DM"
+
+[meters.meter1]
+address = 3
+type = "SDM72DM"
+
+[database]
+directory = ""

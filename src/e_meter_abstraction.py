@@ -5,13 +5,11 @@ from enum import Enum
 
 
 class electricity_meter_type(Enum):
-    NONE = 0
-    SDM72DM = 1
+    SDM72DM = 0
     
 #to get the actual register from addresses like 30053 remove the first digit and decrease by 1
 electricity_meter_lu = {
-    0: {},
-    1: {
+    0: {
             "current_usage_watts": ('f', 52),
             "import_wh_since_last_reset": ('f', 72),
             "export_wh_since_last_reset": ('f', 74),
@@ -28,7 +26,7 @@ electricity_meter_lu = {
 class electricity_meter:
     
     address: int = -1
-    meter_type: electricity_meter_type = electricity_meter_type.NONE
+    meter_type: electricity_meter_type = None
     bridge: minimalmodbus.Instrument = None
     
     def __init__(self, address: int, meter_type: electricity_meter_type):
@@ -42,7 +40,7 @@ class electricity_meter:
         try:
             self.bridge = minimalmodbus.Instrument('/dev/ttyACM0', self.address)
         except IOError as e:
-            logging.exception('Can not not connect to meter.', e)
+            logging.exception('Cannot connect to meter.', e)
     
     def read_values(self) -> {}:
         if self.bridge == None:
@@ -56,9 +54,9 @@ class electricity_meter:
                 elif data_type == 'i':
                     received_vals[key] = self.bridge.read_register(data_address, 4)
                 else:
-                    logging.error('Could not match', data_type, 'to any data type in argument', key + 'in', self.meter_type, '.')
+                    logging.error('Cannot match', data_type, 'to any data type in argument', key + 'in', self.meter_type, '.')
             print(received_vals)
         except IOError as e:
-            logging.exception('Failed to read from meter.', e)
+            logging.exception('Cannot read from meter.', e)
         finally:
             return received_vals
