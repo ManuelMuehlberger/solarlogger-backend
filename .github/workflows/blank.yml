@@ -38,8 +38,4 @@ jobs:
       - name: Run test suite
         run: |
           python -m poetry run python -m pytest -sxv
-
-      - name: Run test suite
-        run: |
-          pipenv run test -v
-
+          
