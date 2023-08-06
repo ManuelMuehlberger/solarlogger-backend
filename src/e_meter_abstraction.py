@@ -12,7 +12,7 @@ class electricity_meter_type(Enum):
 electricity_meter_lu = {
     0: {},
     1: {
-            "current_usage_watts": ('f', 53),
+            "current_usage_watts": ('f', 52),
             "import_wh_since_last_reset": ('f', 72),
             "export_wh_since_last_reset": ('f', 74),
             "total_kwh": ('f', 342),
@@ -40,9 +40,9 @@ class electricity_meter:
         
     def connect(self):
         try:
-            bridge = minimalmodbus.Instrument('/dev/ttyACM0', self.address)
+            self.bridge = minimalmodbus.Instrument('/dev/ttyACM0', self.address)
         except IOError as e:
-            logging.exception('Can not not connect to meter.')
+            logging.exception('Can not not connect to meter.', e)
     
     def read_values(self) -> {}:
         if self.bridge == None:
@@ -58,7 +58,7 @@ class electricity_meter:
                 else:
                     logging.error('Could not match', data_type, 'to any data type in argument', key + 'in', self.meter_type, '.')
             print(received_vals)
-        except IOError:
-            logging.exception('Failed to read from meter.')
+        except IOError as e:
+            logging.exception('Failed to read from meter.', e)
         finally:
             return received_vals
