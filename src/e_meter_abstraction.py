@@ -7,7 +7,8 @@ from enum import Enum
 class electricity_meter_type(Enum):
     SDM72DM = 0
     
-#to get the actual register from addresses like 30053 remove the first digit and decrease by 1
+    
+
 electricity_meter_lu = {
     0: {
             "current_usage_watts": ('f', 52),
@@ -21,6 +22,8 @@ electricity_meter_lu = {
             "export_power": ('f', 1282)
         }
 }
+#to get the actual register from addresses like 30053 remove the first digit and decrease by 1
+
 
 
 class electricity_meter:
