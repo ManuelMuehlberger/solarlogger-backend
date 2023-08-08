@@ -39,6 +39,7 @@ class electricity_meter:
         self.meter_type = meter_type
         self.connect()
         
+        
     def connect(self):
         try:
             self.bridge = minimalmodbus.Instrument('/dev/ttyACM0', self.address)
@@ -47,8 +48,8 @@ class electricity_meter:
     
     def read_values(self) -> {}:
         if self.bridge == None:
-            logging.fatal('Can not read from meter that was not initialized!')
-            return {}
+            logging.error('Cannot read from meter that was not initialized. Trying to connect now...')
+            self.conect()
         received_vals = {}
         try:
             for key, (data_type, data_address) in electricity_meter_lu[self.meter_type.value].items():
@@ -59,7 +60,9 @@ class electricity_meter:
                 else:
                     logging.error('Cannot match', data_type, 'to any data type in argument', key + 'in', self.meter_type, '.')
             print(received_vals)
-        except IOError as e:
-            logging.exception('Cannot read from meter.', e)
+        except minimalmodbus.NoResponseError as e:
+            logging.exception(f'No response from meter {self.address}. {e}')
+        except (IOError, ValueError) as e:
+            logging.exception(f'Error reading from meter {self.address}. {e}')
         finally:
             return received_vals

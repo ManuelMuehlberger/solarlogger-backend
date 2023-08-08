@@ -12,4 +12,4 @@ address = 3
 type = "SDM72DM"
 
 [database]
-directory = ""
+directory = "/Users/manu/Downloads/test.db"
