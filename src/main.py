@@ -51,8 +51,8 @@ class meter_manager:
             if self.is_database_empty():
                 logging.info("The database seems to not be initialized yet. Initializing now...")
                 self.init_db()
-        except:
-            logging.fatal("Can not connect to SQLite db at " + self.config["database"]["directory"] + ".")
+        except Exception as e:
+            logging.fatal("Cannot connect to SQLite db at " + self.config["database"]["directory"] + ": " + e)
             sys.exit(1)
             
     def is_database_empty(self):
