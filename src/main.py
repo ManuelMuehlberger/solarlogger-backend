@@ -103,7 +103,7 @@ class meter_manager:
             cursor = self.db.cursor()
 
             for key, value in received_vals.items():
-                if key in electricity_meter_lu[0]:
+                if key in em.electricity_meter_lu[0]:
                     column_name, (data_type, _) = key, em.electricity_meter_lu[0][key]
                     if data_type == 'f':
                         insert_query = f"INSERT INTO meter_{self.address} ({column_name}) VALUES (?)"
