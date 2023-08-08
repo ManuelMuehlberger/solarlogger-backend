@@ -14,7 +14,15 @@ class meter_manager:
     
     def __init__(self, config: {}):
         self.config = config
-        
+    
+    def log_state(self):
+        logging.info("meter_manager State:")
+        logging.info(f"Config: {self.config}")
+        logging.info(f"Database Connection: {'Connected' if self.db else 'Not Connected'}")
+        logging.info(f"Number of Meters: {len(self.meters)}")
+        for index, meter in enumerate(self.meters, start=1):
+            logging.info(f"Meter {index}: Address {meter.address}, Type {meter.meter_type.name}")
+
         
     def add_meter(self, meter: em.electricity_meter):
         self.meters.append(meter)
@@ -166,12 +174,12 @@ def parse_config() -> {}:
 def startup():
     
     #check config file
-    print(parse_config())
     manager = meter_manager(parse_config())
+    manager.log_state()
 
     #connect to meters
     manager.add_all_meters()
-    
+    manager.log_state()
     #connect to database
     #if database empty -> setup
     manager.connect_db()
