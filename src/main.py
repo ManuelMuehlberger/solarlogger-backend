@@ -46,13 +46,13 @@ class meter_manager:
 
     def connect_db(self):
         try:
-            self.db = sqlite.connect(self.config["database"]["directory"])
+            self.db = sqlite3.connect(self.config["database"]["directory"])
             logging.info("Successfully connected to SQLite db at " + self.config["database"]["directory"] + ".")
             if self.is_database_empty():
                 logging.info("The database seems to not be initialized yet. Initializing now...")
                 self.init_db()
         except Exception as e:
-            logging.fatal("Cannot connect to SQLite db at " + self.config["database"]["directory"] + ": " + e)
+            logging.fatal("Cannot connect to SQLite db at " + self.config["database"]["directory"] + ": " + str(e))
             sys.exit(1)
             
     def is_database_empty(self):
@@ -68,7 +68,7 @@ class meter_manager:
 
     def init_db(self):
         try:
-            if db == None:
+            if self.db == None:
                 raise ValueError("Db has not been initialized.")
             
             cursor = self.db.cursor()
@@ -79,10 +79,10 @@ class meter_manager:
                     meter_address = meter_info["address"]
                     meter_type = meter_info["type"]
                     
-                    if meter_type in electricity_meter_lu:
+                    if meter_type in em.electricity_meter_lu:
                         meter_table_name = f"meter_{meter_address}"
                         meter_table_definition = ", ".join(
-                            [f"{column_name} {data_type}" for column_name, (data_type, _) in electricity_meter_lu[meter_type].items()]
+                            [f"{column_name} {data_type}" for column_name, (data_type, _) in em.electricity_meter_lu[meter_type].items()]
                         )
                         create_table_query = f"CREATE TABLE IF NOT EXISTS {meter_table_name} (timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP, {meter_table_definition})"
                         
@@ -104,7 +104,7 @@ class meter_manager:
 
             for key, value in received_vals.items():
                 if key in electricity_meter_lu[0]:
-                    column_name, (data_type, _) = key, electricity_meter_lu[0][key]
+                    column_name, (data_type, _) = key, em.electricity_meter_lu[0][key]
                     if data_type == 'f':
                         insert_query = f"INSERT INTO meter_{self.address} ({column_name}) VALUES (?)"
                         cursor.execute(insert_query, (value,))
