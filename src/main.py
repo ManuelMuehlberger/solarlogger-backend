@@ -25,8 +25,8 @@ class meter_manager:
         for meter_name, meter_info in self.config["meters"].items():
             if meter_name.startswith("meter"):
                 address = meter_info["address"]
-                meter_type = electricity_meter_type[meter_info["type"]]
-                meter = electricity_meter(address, meter_type)
+                meter_type = em.electricity_meter_type[meter_info["type"]]
+                meter = em.electricity_meter(address, meter_type)
                 self.add_meter(meter)
 
     def read_all_meters(self) -> []:
@@ -36,15 +36,15 @@ class meter_manager:
             all_received_vals.append(received_vals)
         return all_received_vals
 
-    def connect_db():
+    def connect_db(self):
         try:
-            self.db = sqlite.connect(config["database"]["directory"])
-            logging.info("Successfully connected to SQLite db at " + config["database"]["directory"] + ".")
+            self.db = sqlite.connect(self.config["database"]["directory"])
+            logging.info("Successfully connected to SQLite db at " + self.config["database"]["directory"] + ".")
             if self.is_database_empty():
                 logging.info("The database seems to not be initialized yet. Initializing now...")
                 self.init_db()
         except:
-            logging.fatal("Can not connect to SQLite db at " + config["database"]["directory"] + ".")
+            logging.fatal("Can not connect to SQLite db at " + self.config["database"]["directory"] + ".")
             sys.exit(1)
             
     def is_database_empty(self):
@@ -113,6 +113,7 @@ class meter_manager:
             
 
 def parse_config() -> {}:
+    config = {}
     try:
         with open("backend-config.toml", "rb") as f:
             config = tomli.load(f)
@@ -156,7 +157,7 @@ def parse_config() -> {}:
     except ValueError as e:
         logging.fatal(e)
         sys.exit(1)
-    
+    return config
 
 #def setup():
 
