@@ -79,7 +79,7 @@ class meter_manager:
                     meter_address = meter_info["address"]
                     meter_type = meter_info["type"]
                     
-                    if meter_type in em.electricity_meter_lu:
+                    if meter_type in em.electricity_meter_type:
                         meter_table_name = f"meter_{meter_address}"
                         meter_table_definition = ", ".join(
                             [f"{column_name} {data_type}" for column_name, (data_type, _) in em.electricity_meter_lu[meter_type].items()]
@@ -90,7 +90,7 @@ class meter_manager:
                         self.db.commit()
                         logging.info(f"Created table for meter '{meter_name}' with address {meter_address} and type {meter_type}.")
                     else:
-                        logging.warning(f"Invalid meter type '{meter_type}' for meter '{meter_name}' with address {meter_address}. Skipping table creation.")
+                        raise ValueError(f"Invalid meter type '{meter_type}' for meter '{meter_name}' with address {meter_address}. Skipping table creation.")
         except Exception as e:
             logging.error(str(e))
             sys.exit(1)        
