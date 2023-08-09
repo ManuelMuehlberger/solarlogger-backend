@@ -7,9 +7,6 @@ pollingfrequency = 1
 address = 2
 type = "SDM72DM"
 
-[meters.meter1]
-address = 3
-type = "SDM72DM"
 
 [database]
-directory = "/Users/manu/Downloads/test.db"
+directory = "/home/manu/debug/test.db"
